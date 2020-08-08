@@ -6,35 +6,37 @@ import java.util.ArrayList;
 public class Number
 {
     ArrayList<Integer> v = new ArrayList<>();
+    FractranProgram p;
 
-    public Number(BigInteger n)
+    public Number(BigInteger n, FractranProgram _p)
     {
-        for (int i = 0; i < Main.s; i++)
+        p = _p;
+        for (int i = 0; i < p.s; i++)
         {
             int f = 0;
-            while (n.mod(BigInteger.valueOf(Main.primes.get(i))).equals(BigInteger.valueOf(0)))
+            while (n.mod(BigInteger.valueOf(p.primes.get(i))).equals(BigInteger.valueOf(0)))
             {
                 f++;
-                n = n.divide(BigInteger.valueOf(Main.primes.get(i)));
+                n = n.divide(BigInteger.valueOf(p.primes.get(i)));
             }
             v.add(f);
-            if(i == Main.s - 1 && !n.equals(BigInteger.valueOf(1)))
+            if(i == p.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
-                Main.nextPrime();
+                p.nextPrime();
             }
         }
     }
 
     public boolean isDivisible(Number n)
     {
-        for (int i = 0; i < Main.s; i++)
+        for (int i = 0; i < p.s; i++)
         {
             if (n.v.get(i) > v.get(i))
             {
                 return false;
             }
         }
-        for (int i = 0; i < Main.s; i++)
+        for (int i = 0; i < p.s; i++)
         {
             v.set(i, v.get(i) - n.v.get(i));
         }
@@ -42,7 +44,7 @@ public class Number
     }
     public void multiply(Number n)
     {
-        for (int i = 0; i < Main.s; i++)
+        for (int i = 0; i < p.s; i++)
         {
             v.set(i, v.get(i) + n.v.get(i));
         }
@@ -50,7 +52,7 @@ public class Number
 
     public void normalize()
     {
-        while (v.size() < Main.s)
+        while (v.size() < p.s)
         {
             v.add(0);
         }
@@ -59,9 +61,9 @@ public class Number
     public long calc()
     {
         int returnValue = 1;
-        for (int i = 0; i < Main.s; i++)
+        for (int i = 0; i < p.s; i++)
         {
-            returnValue *= Math.pow(Main.primes.get(i), v.get(i));
+            returnValue *= Math.pow(p.primes.get(i), v.get(i));
         }
         return returnValue;
     }

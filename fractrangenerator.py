@@ -1,5 +1,5 @@
-dimx = 5
-dimy = 5
+dimx = 30
+dimy = 30
 
 # generate primes to use as variables
 primes = [2, 3]
