@@ -17,6 +17,10 @@ public class Number
                 n /= Main.primes.get(i);
             }
             v.add(f);
+            if(i == Main.s - 1 && n != 1)
+            {
+                Main.nextPrime();
+            }
         }
     }
 
@@ -53,6 +57,14 @@ public class Number
             }
         }
         return true;
+    }
+
+    public void normalize()
+    {
+        while (v.size() < Main.s)
+        {
+            v.add(0);
+        }
     }
 
     public int calc()
