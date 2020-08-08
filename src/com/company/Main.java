@@ -8,7 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -28,6 +32,10 @@ public class Main extends Application {
     static ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3));
     Button run = new Button("RUN");
     FractranProgram program;
+    ScrollPane displayFrations = new ScrollPane();
+    ScrollPane displayState = new ScrollPane();
+    Label lblfractions = new Label();
+    Label lblstate = new Label();
     
     EventHandler<MouseEvent> clickedBoard = mouseEvent ->
     {
@@ -79,7 +87,7 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-        Pane root = new Pane();
+        Pane root = new AnchorPane();
         String title = "Conway games";
         stage.setTitle(title);
         stage.setScene(new Scene(root, sizex*20+20, sizey*20+20+60));
@@ -91,6 +99,9 @@ public class Main extends Application {
     
         canvas.setOnMousePressed(clickedBoard);
         run.setOnAction(clickRun);
+        AnchorPane.setTopAnchor(run, (double) (10+sizey*20+10));
+        AnchorPane.setLeftAnchor(run, (double) 10);
+        
         gc.setFill(Color.ANTIQUEWHITE);
         gc.fillRect(0, 0, sizex*20+20, sizey*20+20+60);
         gc.setFill(Color.WHITE);
