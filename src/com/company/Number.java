@@ -22,6 +22,7 @@ public class Number
             v.add(f);
             if(i == p.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
+                System.out.println(p.s);
                 p.nextPrime();
             }
         }
@@ -31,6 +32,7 @@ public class Number
     {
         for (int i = 0; i < p.s; i++)
         {
+            System.out.println(p.s);
             System.out.println(n.v.size());
             System.out.println(v.size());
             if (n.v.get(i) > v.get(i))
@@ -62,11 +64,11 @@ public class Number
 
     public BigInteger calc()
     {
-        int returnValue = 1;
+        BigInteger returnValue = BigInteger.valueOf(1);
         for (int i = 0; i < p.s; i++)
         {
-            returnValue *= Math.pow(p.primes.get(i), v.get(i));
+            returnValue = returnValue.multiply(BigInteger.valueOf((long) Math.pow(p.primes.get(i), v.get(i))));
         }
-        return BigInteger.valueOf(returnValue);
+        return (returnValue);
     }
 }
