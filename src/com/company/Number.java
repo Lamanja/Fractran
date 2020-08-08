@@ -31,6 +31,8 @@ public class Number
     {
         for (int i = 0; i < p.s; i++)
         {
+            System.out.println(n.v.size());
+            System.out.println(v.size());
             if (n.v.get(i) > v.get(i))
             {
                 return false;
