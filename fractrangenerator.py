@@ -1,5 +1,6 @@
-dimx = 30
-dimy = 30
+import sys
+dimx = int(sys.argv[1])
+dimy = int(sys.argv[2])
 
 # generate primes to use as variables
 primes = [2, 3]
