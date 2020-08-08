@@ -24,13 +24,14 @@ import java.util.Arrays;
 
 
 public class Main extends Application {
-    int sizex = 40;
-    int sizey = 21;
-    Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
-    GraphicsContext gc = canvas.getGraphicsContext2D();
-    BigInteger state = BigInteger.valueOf(2);
+    static int sizex = 20;
+    static int sizey = 20;
+    static Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
+    static GraphicsContext gc = canvas.getGraphicsContext2D();
+    static BigInteger state = BigInteger.valueOf(2);
     static ArrayList<Long> primes = new ArrayList<>(Arrays.asList((long) 2, (long) 3));
     Button run = new Button("RUN");
+    Button grid = new Button("GRID");
     FractranProgram program;
     ScrollPane displayFrations = new ScrollPane();
     ScrollPane displayState = new ScrollPane();
@@ -38,6 +39,7 @@ public class Main extends Application {
     Label lblstate = new Label();
     static boolean black = false;
     static boolean white = false;
+    static boolean hasGrid = true;
 
     EventHandler<MouseEvent> clickedBoard = mouseEvent ->
     {
@@ -60,7 +62,8 @@ public class Main extends Application {
                     gc.setFill(Color.BLACK);
                     black = true;
                 }
-                gc.fillRect(x*20+11, y*20+11, 18, 18);
+                gc.fillRect(x*20+10, y*20+10, 20, 20);
+                addGrid();
             }
         }
     };
@@ -76,14 +79,15 @@ public class Main extends Application {
                 if (white && state.mod(BigInteger.valueOf(p)).equals(BigInteger.valueOf(0))) {
                     state = state.divide(BigInteger.valueOf(p));
                     gc.setFill(Color.WHITE);
-                    gc.fillRect(x * 20 + 11, y * 20 + 11, 18, 18);
+                    gc.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
                 }
                 if (black && !state.mod(BigInteger.valueOf(p)).equals(BigInteger.valueOf(0))) {
                     state = state.multiply(BigInteger.valueOf(p));
                     gc.setFill(Color.BLACK);
-                    gc.fillRect(x * 20 + 11, y * 20 + 11, 18, 18);
+                    gc.fillRect(x * 20 + 10, y * 20 + 10, 20, 20);
 
                 }
+                addGrid();
             }
         }
     };
@@ -94,26 +98,17 @@ public class Main extends Application {
         black = false;
     };
 
-
-            EventHandler<ActionEvent> clickRun = actionEvent ->
+    EventHandler<ActionEvent> clickRun = actionEvent ->
     {
         BigInteger newState = program.run(state);
         state = newState.multiply(BigInteger.valueOf(2));
-        for (int x = 0; x < sizex; x++)
-        {
-            for (int y = 0; y < sizey; y++)
-            {
-                if (state.mod(BigInteger.valueOf(primes.get(x * sizey + y + 2))).equals(BigInteger.valueOf(0)))
-                {
-                    gc.setFill(Color.BLACK);
-                }
-                else
-                {
-                    gc.setFill(Color.WHITE);
-                }
-                gc.fillRect(x*20+11, y*20+11, 18, 18);
-            }
-        }
+        paint();
+    };
+
+    EventHandler<ActionEvent> clickGrid = actionEvent ->
+    {
+        hasGrid = !hasGrid;
+        paint();
     };
     
     @Override
@@ -131,12 +126,14 @@ public class Main extends Application {
     
         root.getChildren().add(canvas);
         root.getChildren().add(run);
+        root.getChildren().add(grid);
         stage.setResizable(false);
     
         canvas.setOnMousePressed(clickedBoard);
         canvas.setOnMouseDragged(draggedBoard);
         canvas.setOnMouseReleased(releasedBoard);
         run.setOnAction(clickRun);
+        grid.setOnAction(clickGrid);
         AnchorPane.setTopAnchor(run, (double) (10 + sizey * 20 + 10));
         AnchorPane.setLeftAnchor(run, (double) 10);
         
@@ -145,16 +142,8 @@ public class Main extends Application {
         gc.setFill(Color.WHITE);
         gc.fillRect(10, 10, sizex * 20, sizey * 20);
 
-        gc.setFill(Color.LIGHTGRAY);
-        for(int x = 1; x < sizex; x++)
-        {
-            gc.fillRect(x * 20 + 9, 10, 2, sizey * 20);
-        }
-        for(int y = 1; y < sizey; y++)
-        {
-            gc.fillRect(10, y * 20 + 9, sizex * 20, 2);
-        }
-    
+        addGrid();
+
         while (primes.size() < sizex*sizey + 2)
         {
             nextPrime();
@@ -193,6 +182,41 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void addGrid()
+    {
+        if(hasGrid)
+        {
+            gc.setFill(Color.LIGHTGRAY);
+            for (int x = 1; x < sizex; x++) {
+                gc.fillRect(x * 20 + 10, 10, 1, sizey * 20);
+            }
+            for (int y = 1; y < sizey; y++) {
+                gc.fillRect(10, y * 20 + 10, sizex * 20, 1);
+            }
+        }
+
+    }
+
+    public static void paint()
+    {
+        for (int x = 0; x < sizex; x++)
+        {
+            for (int y = 0; y < sizey; y++)
+            {
+                if (state.mod(BigInteger.valueOf(primes.get(x * sizey + y + 2))).equals(BigInteger.valueOf(0)))
+                {
+                    gc.setFill(Color.BLACK);
+                }
+                else
+                {
+                    gc.setFill(Color.WHITE);
+                }
+                gc.fillRect(x*20+10, y*20+10, 20, 20);
+            }
+        }
+        addGrid();
     }
 
 }
