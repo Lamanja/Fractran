@@ -22,7 +22,6 @@ public class Number
             v.add(f);
             if(i == p.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
-                System.out.println(p.s);
                 p.nextPrime();
             }
         }
@@ -32,9 +31,6 @@ public class Number
     {
         for (int i = 0; i < p.s; i++)
         {
-            System.out.println(p.s);
-            System.out.println(n.v.size());
-            System.out.println(v.size());
             if (n.v.get(i) > v.get(i))
             {
                 return false;

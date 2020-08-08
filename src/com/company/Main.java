@@ -25,7 +25,7 @@ import java.util.Arrays;
 
 public class Main extends Application {
     int sizex = 40;
-    int sizey = 20;
+    int sizey = 21;
     Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     BigInteger state = BigInteger.valueOf(2);
@@ -39,7 +39,6 @@ public class Main extends Application {
     
     EventHandler<MouseEvent> clickedBoard = mouseEvent ->
     {
-        System.out.println(mouseEvent.getSceneX());
         if (mouseEvent.getSceneX() > 10 && mouseEvent.getSceneX() < 10 + sizex*20)
         {
             if (mouseEvent.getSceneY() > 10 && mouseEvent.getSceneY() < 10 + sizey*20)
@@ -58,7 +57,6 @@ public class Main extends Application {
                     gc.setFill(Color.BLACK);
                 }
                 gc.fillRect(x*20+10, y*20+10, 20, 20);
-                System.out.println(state);
             }
         }
     };
@@ -80,13 +78,17 @@ public class Main extends Application {
                     gc.setFill(Color.WHITE);
                 }
                 gc.fillRect(x*20+10, y*20+10, 20, 20);
-                System.out.println(state);
             }
         }
     };
     
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
+        Process p = Runtime.getRuntime().exec("py fractrangenerator.py "+sizex+" "+sizey);
+        FractranGenerator.generateProgram(sizex, sizey);
+        Thread.sleep(1000);
+        program = new FractranProgram();
+        Thread.sleep(1000);
         Pane root = new AnchorPane();
         String title = "Conway games";
         stage.setTitle(title);
@@ -112,9 +114,7 @@ public class Main extends Application {
             nextPrime();
         }
     
-        Process p = Runtime.getRuntime().exec("py fractrangenerator.py "+sizex+" "+sizey);
-        //p.waitFor();
-        program = new FractranProgram();
+
 
     }
 
