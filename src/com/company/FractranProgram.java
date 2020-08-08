@@ -28,6 +28,7 @@ public class FractranProgram {
             for(int i = 0; i < fracs.length; i++)
             {
                 nums = fracs[i].split("/");
+                System.out.println(""+nums[0]+" "+nums[1]);
                 deNominators[i] = new Number(new BigInteger(nums[1]), this);
                 nominators[i] = new Number(new BigInteger(nums[0]), this);
 

@@ -64,7 +64,8 @@ for i in range(dimx):
         
         
 print(program[:-2])
-
+print(primes)
+print(variables)
 file = open("fractrancode.txt", "w+")
 file.write(program[:-2])
 file.close()

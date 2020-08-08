@@ -10,6 +10,7 @@ public class Number
 
     public Number(BigInteger n, FractranProgram _p)
     {
+        
         p = _p;
         for (int i = 0; i < p.s; i++)
         {
@@ -19,10 +20,11 @@ public class Number
                 f++;
                 n = n.divide(BigInteger.valueOf(p.primes.get(i)));
             }
+            //System.out.println(i + ","+n);
             v.add(f);
             if(i == p.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
-                System.out.println(p.s);
+                System.out.println("."+p.s);
                 p.nextPrime();
             }
         }
@@ -32,9 +34,6 @@ public class Number
     {
         for (int i = 0; i < p.s; i++)
         {
-            System.out.println(p.s);
-            System.out.println(n.v.size());
-            System.out.println(v.size());
             if (n.v.get(i) > v.get(i))
             {
                 return false;
