@@ -36,7 +36,9 @@ public class Main extends Application {
     ScrollPane displayState = new ScrollPane();
     Label lblfractions = new Label();
     Label lblstate = new Label();
-    
+    static boolean black = false;
+    static boolean white = false;
+
     EventHandler<MouseEvent> clickedBoard = mouseEvent ->
     {
         if (mouseEvent.getSceneX() > 10 && mouseEvent.getSceneX() < 10 + sizex*20)
@@ -50,18 +52,50 @@ public class Main extends Application {
                 {
                     state = state.divide(BigInteger.valueOf(primes.get(x * sizey + y + 2)));
                     gc.setFill(Color.WHITE);
+                    white = true;
                 }
                 else
                 {
                     state = state.multiply(BigInteger.valueOf(primes.get(x * sizey + y + 2)));
                     gc.setFill(Color.BLACK);
+                    black = true;
                 }
-                gc.fillRect(x*20+10, y*20+10, 20, 20);
+                gc.fillRect(x*20+11, y*20+11, 18, 18);
             }
         }
     };
-    
-    EventHandler<ActionEvent> clickRun = actionEvent ->
+
+    EventHandler<MouseEvent> draggedBoard = mouseEvent ->
+    {
+
+        int x = (int) ((mouseEvent.getSceneX()-10)/20.0);
+        int y = (int) ((mouseEvent.getSceneY()-10)/20.0);
+        if (mouseEvent.getSceneX() > 10 && mouseEvent.getSceneX() < 10 + sizex*20) {
+            if (mouseEvent.getSceneY() > 10 && mouseEvent.getSceneY() < 10 + sizey * 20) {
+                long p = primes.get(x * sizey + y + 2);
+                if (white && state.mod(BigInteger.valueOf(p)).equals(BigInteger.valueOf(0))) {
+                    state = state.divide(BigInteger.valueOf(p));
+                    gc.setFill(Color.WHITE);
+                    gc.fillRect(x * 20 + 11, y * 20 + 11, 18, 18);
+                }
+                if (black && !state.mod(BigInteger.valueOf(p)).equals(BigInteger.valueOf(0))) {
+                    state = state.multiply(BigInteger.valueOf(p));
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(x * 20 + 11, y * 20 + 11, 18, 18);
+
+                }
+            }
+        }
+    };
+
+    EventHandler<MouseEvent> releasedBoard = mouseEvent ->
+    {
+        white = false;
+        black = false;
+    };
+
+
+            EventHandler<ActionEvent> clickRun = actionEvent ->
     {
         BigInteger newState = program.run(state);
         state = newState.multiply(BigInteger.valueOf(2));
@@ -77,7 +111,7 @@ public class Main extends Application {
                 {
                     gc.setFill(Color.WHITE);
                 }
-                gc.fillRect(x*20+10, y*20+10, 20, 20);
+                gc.fillRect(x*20+11, y*20+11, 18, 18);
             }
         }
     };
@@ -100,14 +134,26 @@ public class Main extends Application {
         stage.setResizable(false);
     
         canvas.setOnMousePressed(clickedBoard);
+        canvas.setOnMouseDragged(draggedBoard);
+        canvas.setOnMouseReleased(releasedBoard);
         run.setOnAction(clickRun);
-        AnchorPane.setTopAnchor(run, (double) (10+sizey*20+10));
+        AnchorPane.setTopAnchor(run, (double) (10 + sizey * 20 + 10));
         AnchorPane.setLeftAnchor(run, (double) 10);
         
         gc.setFill(Color.ANTIQUEWHITE);
-        gc.fillRect(0, 0, sizex*20+20, sizey*20+20+60);
+        gc.fillRect(0, 0, sizex * 20 + 20, sizey * 20 + 20 + 60);
         gc.setFill(Color.WHITE);
-        gc.fillRect(10, 10, sizex*20, sizey*20);
+        gc.fillRect(10, 10, sizex * 20, sizey * 20);
+
+        gc.setFill(Color.LIGHTGRAY);
+        for(int x = 1; x < sizex; x++)
+        {
+            gc.fillRect(x * 20 + 9, 10, 2, sizey * 20);
+        }
+        for(int y = 1; y < sizey; y++)
+        {
+            gc.fillRect(10, y * 20 + 9, sizex * 20, 2);
+        }
     
         while (primes.size() < sizex*sizey + 2)
         {
