@@ -1,6 +1,8 @@
 package gui;
 
+import com.company.FractranProgram;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -11,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +27,7 @@ public class Main extends Application {
 	BigInteger state = BigInteger.valueOf(2);
 	static ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3));
 	Button run = new Button("RUN");
+	FractranProgram program = new FractranProgram();
 	
 	EventHandler<MouseEvent> clickedBoard = mouseEvent ->
 	{
@@ -51,6 +55,31 @@ public class Main extends Application {
 		}
 	};
 	
+	EventHandler<ActionEvent> clickRun = actionEvent ->
+	{
+		BigInteger newState = program.run(state);
+		state = newState.multiply(BigInteger.valueOf(2));
+		for (int x = 0; x < sizex; x++)
+		{
+			for (int y = 0; y < sizey; y++)
+			{
+				if (state.mod(BigInteger.valueOf(primes.get(x * sizey + y + 2))).equals(BigInteger.valueOf(0)))
+				{
+					gc.setFill(Color.WHITE);
+				}
+				else
+				{
+					gc.setFill(Color.BLACK);
+				}
+				gc.fillRect(x*20+10, y*20+10, 20, 20);
+				System.out.println(state);
+			}
+		}
+	};
+	
+	public Main() throws IOException {
+	}
+	
 	@Override
 	public void start(Stage stage) {
 		Pane root = new Pane();
@@ -60,9 +89,11 @@ public class Main extends Application {
 		stage.show();
 		
 		root.getChildren().add(canvas);
+		root.getChildren().add(run);
 		stage.setResizable(false);
 		
 		canvas.setOnMousePressed(clickedBoard);
+		run.setOnAction(clickRun);
 		gc.setFill(Color.ANTIQUEWHITE);
 		gc.fillRect(0, 0, sizex*20+20, sizey*20+20+60);
 		gc.setFill(Color.WHITE);
