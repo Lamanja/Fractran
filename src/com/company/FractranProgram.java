@@ -68,7 +68,7 @@ public class FractranProgram {
         return true;
     }
 
-    public Number run(BigInteger n)
+    public BigInteger run(BigInteger n)
     {
         boolean isDone;
 
@@ -92,6 +92,6 @@ public class FractranProgram {
                 break;
             }
         }
-        return(num);
+        return(num.calc());
     }
 }

@@ -58,13 +58,13 @@ public class Number
         }
     }
 
-    public long calc()
+    public BigInteger calc()
     {
         int returnValue = 1;
         for (int i = 0; i < p.s; i++)
         {
             returnValue *= Math.pow(p.primes.get(i), v.get(i));
         }
-        return returnValue;
+        return BigInteger.valueOf(returnValue);
     }
 }
