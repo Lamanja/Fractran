@@ -2,8 +2,13 @@ package com.company;
 
 import javafx.scene.transform.Scale;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Scanner;
 
 public class Main
@@ -13,17 +18,21 @@ public class Main
     static Number[] deNominators;
     static Number[] nominators;
     static Number num;
-    public static void main(String[] args)
-    {
-        createProgram("107/109, 131794161814201/214, 139662469982213/321, 143596624066219/535, 155399086318237/749, 163267394486249/1177, 175069856738267/1391, 190806473074291/1819, 198674781242303/2033, 202608935326309/2461, 1/107, 1/17249876309, 1/594823321, 1/707281, 2/24389, 2/56347, 1/29, 1/67, 1/27512614111, 1/887503681, 1/923521, 3/29791, 3/68231, 1/31, 1/71, 1/94931877133, 1/2565726409, 1/1874161, 5/50653, 5/99937, 1/37, 1/73, 1/194754273881, 1/4750104241, 1/2825761, 7/68921, 7/132799, 1/41, 1/79, 1/271818611107, 1/6321363049, 1/3418801, 11/79507, 11/153467, 1/43, 1/83, 1/506623120463, 1/10779215329, 1/4879681, 13/103823, 13/196601, 1/47, 1/89, 1/1174711139837, 1/22164361129, 1/7890481, 17/148877, 17/272473, 1/53, 1/97, 1/2488651484819, 1/42180533641, 1/12117361, 19/205379, 19/351581, 1/59, 1/101, 1/3142742836021, 1/51520374361, 1/13845841, 23/226981, 23/383263, 1/61, 1/103");
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(Paths.get("fractrancode.txt"), StandardCharsets.UTF_8.name());
+        String content = scanner.useDelimiter("\\A").next();
+        scanner.close();
+
+        createProgram(content);
         for(int i = 0; i < nominators.length; i++)
         {
             deNominators[i].normalize();
             nominators[i].normalize();
         }
         while (true){
-            Scanner scanner = new Scanner(System.in);
-            int a = scanner.nextInt();
+            System.out.println("Next");
+            scanner = new Scanner(System.in);
+            BigInteger a = scanner.nextBigInteger();
             run(a);
 
         }
@@ -37,8 +46,8 @@ public class Main
         for(int i = 0; i < fracs.length; i++)
         {
             nums = fracs[i].split("/");
-            deNominators[i] = new Number(Long.parseLong(nums[1]));
-            nominators[i] = new Number(Long.parseLong(nums[0]));
+            deNominators[i] = new Number(new BigInteger(nums[1]));
+            nominators[i] = new Number(new BigInteger(nums[0]));
 
         }
 
@@ -71,7 +80,7 @@ public class Main
         return true;
     }
 
-    static public Number run(int n)
+    static public Number run(BigInteger n)
     {
         boolean isDone;
 
@@ -80,9 +89,6 @@ public class Main
         while(true)
         {
             isDone = true;
-            {
-                System.out.println(num.v.get(0));
-            }
             for (int j = 0; j < nominators.length; j++)
             {
                 if (num.isDivisible(deNominators[j]))

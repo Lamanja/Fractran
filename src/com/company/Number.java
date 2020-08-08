@@ -1,23 +1,24 @@
 package com.company;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Number
 {
     ArrayList<Integer> v = new ArrayList<>();
 
-    public Number(long n)
+    public Number(BigInteger n)
     {
         for (int i = 0; i < Main.s; i++)
         {
             int f = 0;
-            while (n % Main.primes.get(i) == 0)
+            while (n.mod(BigInteger.valueOf(Main.primes.get(i))).equals(BigInteger.valueOf(0)))
             {
                 f++;
-                n /= Main.primes.get(i);
+                n = n.divide(BigInteger.valueOf(Main.primes.get(i)));
             }
             v.add(f);
-            if(i == Main.s - 1 && n != 1)
+            if(i == Main.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
                 Main.nextPrime();
             }
