@@ -24,7 +24,6 @@ public class Number
             v.add(f);
             if(i == p.s - 1 && !n.equals(BigInteger.valueOf(1)))
             {
-                System.out.println("."+p.s);
                 p.nextPrime();
             }
         }

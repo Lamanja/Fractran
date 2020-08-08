@@ -27,8 +27,8 @@ import java.util.Scanner;
 
 
 public class Main extends Application {
-    int sizex = 15;
-    int sizey = 15;
+    int sizex = 20;
+    int sizey = 20;
     Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+100);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     BigInteger state = BigInteger.valueOf(2);
@@ -49,19 +49,18 @@ public class Main extends Application {
                 int x = (int) ((mouseEvent.getSceneX()-10)/20.0);
                 int y = (int) ((mouseEvent.getSceneY()-10)/20.0);
 
-                if (state.mod(BigInteger.valueOf(primes.get(x * sizey + y + 2))).equals(BigInteger.valueOf(0)))
+                if (state.mod(BigInteger.valueOf(primes.get(y * sizex + x + 2))).equals(BigInteger.valueOf(0)))
                 {
-                    state = state.divide(BigInteger.valueOf(primes.get(x * sizey + y + 2)));
+                    state = state.divide(BigInteger.valueOf(primes.get(y * sizex + x + 2)));
                     gc.setFill(Color.WHITE);
                 }
                 else
                 {
-                    state = state.multiply(BigInteger.valueOf(primes.get(x * sizey + y + 2)));
+                    state = state.multiply(BigInteger.valueOf(primes.get(y * sizex + x + 2)));
                     gc.setFill(Color.BLACK);
                 }
                 lblstate.setText(state.toString());
                 gc.fillRect(x*20+10, y*20+10, 20, 20);
-                System.out.println(state);
             }
         }
     };
@@ -75,7 +74,7 @@ public class Main extends Application {
         {
             for (int y = 0; y < sizey; y++)
             {
-                if (state.mod(BigInteger.valueOf(primes.get(x * sizey + y + 2))).equals(BigInteger.valueOf(0)))
+                if (state.mod(BigInteger.valueOf(primes.get(y * sizex + x + 2))).equals(BigInteger.valueOf(0)))
                 {
                     gc.setFill(Color.BLACK);
                 }
@@ -84,20 +83,18 @@ public class Main extends Application {
                     gc.setFill(Color.WHITE);
                 }
                 gc.fillRect(x*20+10, y*20+10, 20, 20);
-                System.out.println(state);
             }
         }
     };
     
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
-        Process p = Runtime.getRuntime().exec("py fractrangenerator.py "+sizex+" "+sizey);
+        FractranGenerator.generateProgram(sizex, sizey);
         program = new FractranProgram();
-        
         Pane root = new AnchorPane();
         String title = "Conway games";
         stage.setTitle(title);
-        stage.setScene(new Scene(root, sizex*20+20, sizey*20+20+100));
+        stage.setScene(new Scene(root, sizex*20+20, sizey*20+20+150));
         stage.show();
     
         root.getChildren().add(canvas);
@@ -121,29 +118,46 @@ public class Main extends Application {
         displayState.setPrefSize(sizex*20-60, 20);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
-        int totlen = 10;
+        int totlen = 0;
         String input = new Scanner(Paths.get("fractrancode.txt"), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
         System.out.println("blblblbl: "+input);
         String[] fracts = input.split(", ");
-        for (int i = 0; i < fracts.length; i++) {
+        for (int i = 0; i < fracts.length; i++)
+        {
             String[] splitted = fracts[i].split("/");
-            totlen += Math.max(splitted[0].length(), splitted[1].length());
-            totlen += 5;
+            totlen += 7*Math.max(splitted[0].length(), splitted[1].length());
         }
         
-        Canvas fractions = new Canvas(totlen*5, 30);
+        int canvaswidth = 4096;
+        if (totlen < 4096)
+        {
+            canvaswidth = totlen;
+        }
+        System.out.println(totlen);
+        System.out.println(40*Math.ceil(((double) totlen / (double) canvaswidth)));
+        Canvas fractions = new Canvas(canvaswidth, 40*Math.ceil((double) totlen / (double) canvaswidth));
+        System.out.println(totlen);
         GraphicsContext gc2 = fractions.getGraphicsContext2D();
         gc2.setFill(Color.BLACK);
-        int pos = 10;
-        for (int i = 0; i < fracts.length; i++) {
+        int pos = 0;
+        for (int i = 0; i < fracts.length; i++)
+        {
             String[] splitted = fracts[i].split("/");
-            gc2.fillText(splitted[0], pos, 10);
-            pos += Math.max(splitted[0].length(), splitted[1].length());
+            int x = pos % 4096;
+            int y = 40 * (int) Math.floor(pos / 4096.0);
+            pos += 7*Math.max(splitted[0].length(), splitted[1].length());
+            if (pos - y/40 > 4096 - 20)
+            {
+                x = 0;
+                y ++;
+            }
+            gc2.fillText(splitted[0], x + 10, y);
         }
         
-        displayFrations.setContent(new Label("TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest"));
-        displayFrations.setPrefSize(sizex*20, 40);
+        displayFrations.setContent(fractions);
+        displayFrations.setPrefSize(sizex*20, 60);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
         System.out.println("bj");
         
@@ -156,8 +170,6 @@ public class Main extends Application {
         {
             nextPrime();
         }
-        
-        System.out.println("egljw");
     }
 
     static void nextPrime()

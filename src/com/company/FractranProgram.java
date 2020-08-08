@@ -75,6 +75,12 @@ public class FractranProgram {
 
         num = new Number(n, this);
 
+        for(int i = 0; i < nominators.length; i++)
+        {
+            deNominators[i].normalize();
+            nominators[i].normalize();
+        }
+
         while(true)
         {
             isDone = true;
