@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class FractranProgram {
-    ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3, 5, 7, 11));
+    ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3));
     public int s = primes.size();
     Number[] deNominators;
     Number[] nominators;
