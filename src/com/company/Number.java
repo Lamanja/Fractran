@@ -6,7 +6,7 @@ public class Number
 {
     ArrayList<Integer> v = new ArrayList<>();
 
-    public Number(int n)
+    public Number(long n)
     {
         for (int i = 0; i < Main.s; i++)
         {
@@ -47,18 +47,6 @@ public class Number
         }
     }
 
-    public boolean check()
-    {
-        for(int i = 1; i < Main.s; i++)
-        {
-            if(v.get(i) != 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public void normalize()
     {
         while (v.size() < Main.s)
@@ -67,7 +55,7 @@ public class Number
         }
     }
 
-    public int calc()
+    public long calc()
     {
         int returnValue = 1;
         for (int i = 0; i < Main.s; i++)
