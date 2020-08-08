@@ -10,6 +10,7 @@ public class Number
 
     public Number(BigInteger n, FractranProgram _p)
     {
+        
         p = _p;
         for (int i = 0; i < p.s; i++)
         {

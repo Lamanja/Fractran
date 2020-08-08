@@ -94,7 +94,6 @@ public class FractranProgram {
             }
             if(isDone)
             {
-                //System.out.println(num.calc());
                 break;
             }
         }
