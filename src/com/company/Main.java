@@ -24,12 +24,12 @@ import java.util.Arrays;
 
 
 public class Main extends Application {
-    int sizex = 5;
-    int sizey = 5;
+    int sizex = 40;
+    int sizey = 20;
     Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
     GraphicsContext gc = canvas.getGraphicsContext2D();
     BigInteger state = BigInteger.valueOf(2);
-    static ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3));
+    static ArrayList<Long> primes = new ArrayList<>(Arrays.asList((long) 2, (long) 3));
     Button run = new Button("RUN");
     FractranProgram program;
     ScrollPane displayFrations = new ScrollPane();
@@ -86,7 +86,7 @@ public class Main extends Application {
     };
     
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, InterruptedException {
         Pane root = new AnchorPane();
         String title = "Conway games";
         stage.setTitle(title);
@@ -112,13 +112,15 @@ public class Main extends Application {
             nextPrime();
         }
     
-        Runtime.getRuntime().exec("py fractrangenerator.py "+sizex+" "+sizey);
+        Process p = Runtime.getRuntime().exec("py fractrangenerator.py "+sizex+" "+sizey);
+        //p.waitFor();
         program = new FractranProgram();
+
     }
 
     static void nextPrime()
     {
-        int p = primes.get(primes.size() - 1);
+        long p = primes.get(primes.size() - 1);
         while (true)
         {
             p += 2;
@@ -130,9 +132,9 @@ public class Main extends Application {
         }
     }
 
-    static boolean checkPrime(int p)
+    static boolean checkPrime(long p)
     {
-        for (int q : primes)
+        for (long q : primes)
         {
             if(p%q == 0)
             {
