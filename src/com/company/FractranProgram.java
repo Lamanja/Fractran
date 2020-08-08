@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class FractranProgram {
-    ArrayList<Integer> primes = new ArrayList<>(Arrays.asList(2, 3));
+    ArrayList<Long> primes = new ArrayList<>(Arrays.asList((long) 2, (long) 3));
     public int s = primes.size();
     Number[] deNominators;
     Number[] nominators;
@@ -44,7 +44,7 @@ public class FractranProgram {
     void nextPrime()
     {
         s++;
-        int p = primes.get(primes.size() - 1);
+        long p = primes.get(primes.size() - 1);
         while (true)
         {
             p += 2;
@@ -56,9 +56,9 @@ public class FractranProgram {
         }
     }
 
-    boolean checkPrime(int p)
+    boolean checkPrime(long p)
     {
-        for (int q : primes)
+        for (long q : primes)
         {
             if(p%q == 0)
             {
