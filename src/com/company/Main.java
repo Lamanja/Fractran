@@ -26,8 +26,8 @@ import java.util.Scanner;
 
 
 public class Main extends Application {
-    static int sizex = 20;
-    static int sizey = 20;
+    static int sizex = 21;
+    static int sizey = 21;
     static Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
     static GraphicsContext gc = canvas.getGraphicsContext2D();
     static BigInteger state = BigInteger.valueOf(2);
@@ -39,6 +39,7 @@ public class Main extends Application {
     ScrollPane displayFractions = new ScrollPane();
     ScrollPane displayState = new ScrollPane();
     TextField tstate = new TextField();
+    static Canvas fractions;
     
     
     static boolean black = false;
@@ -77,7 +78,6 @@ public class Main extends Application {
 
     EventHandler<MouseEvent> draggedBoard = mouseEvent ->
     {
-
         int x = (int) ((mouseEvent.getSceneX()-10)/20.0);
         int y = (int) ((mouseEvent.getSceneY()-10)/20.0);
         if (mouseEvent.getSceneX() > 10 && mouseEvent.getSceneX() < 10 + sizex*20) {
@@ -161,25 +161,44 @@ public class Main extends Application {
         displayState.setPrefSize(sizex*20 - 60, 20);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
+        displayFractions();
         
+        displayFractions.setContent(fractions);
+        displayFractions.setPrefSize(sizex*20, 100);
+        displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
+        gc.setFill(Color.ANTIQUEWHITE);
+        gc.fillRect(0, 0, sizex * 20 + 20, sizey * 20 + 20 + 100);
+        gc.setFill(Color.WHITE);
+        gc.fillRect(10, 10, sizex * 20, sizey * 20);
+
+        addGrid();
+
+        while (primes.size() < sizex*sizey + 2)
+        {
+            nextPrime();
+        }
+    }
+    
+    static void displayFractions() throws IOException {
+    
         int totlen = 0;
         String input = new Scanner(Paths.get("fractrancode.txt"), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
-        System.out.println("blblblbl: "+input);
         String[] fracts = input.split(", ");
         for (int i = 0; i < fracts.length; i++)
         {
             String[] splitted = fracts[i].split("/");
             totlen += 7*Math.max(splitted[0].length(), splitted[1].length());
         }
-        
+    
         int canvaswidth = 4096;
         int rowheight = 40;
         if (totlen < 4096)
         {
             canvaswidth = totlen;
         }
-        Canvas fractions = new Canvas(canvaswidth, rowheight * Math.ceil((double) totlen / (double) canvaswidth));
+        fractions = new Canvas(canvaswidth, rowheight * Math.ceil((double) totlen / (double) canvaswidth));
         GraphicsContext gc2 = fractions.getGraphicsContext2D();
         gc2.setFill(Color.BLACK);
         int[] pos = {0, 20};
@@ -194,34 +213,14 @@ public class Main extends Application {
             }
             double x = pos[0] + thiswidth/2.0;
             int y = pos[1];
-            
+        
             gc2.fillText(splitted[0], x - 7 * splitted[0].length() / 2.0, y);
             gc2.fillText(splitted[1], x - 7 * splitted[1].length() / 2.0, y + 17);
             gc2.fillRect(pos[0], pos[1] + 3, thiswidth, 2);
-            
+        
             pos[0] += thiswidth;
         }
-        
-        
-        
-        displayFractions.setContent(fractions);
-        displayFractions.setPrefSize(sizex*20, 100);
-        displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        
-        System.out.println("bj");
-        
-        gc.setFill(Color.ANTIQUEWHITE);
-        gc.fillRect(0, 0, sizex * 20 + 20, sizey * 20 + 20 + 100);
-        gc.setFill(Color.WHITE);
-        gc.fillRect(10, 10, sizex * 20, sizey * 20);
-
-        addGrid();
-
-        while (primes.size() < sizex*sizey + 2)
-        {
-            nextPrime();
-        }
+    
     }
 
     static void nextPrime()
