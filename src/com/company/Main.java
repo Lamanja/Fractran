@@ -10,7 +10,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -35,7 +34,7 @@ public class Main extends Application {
     static ArrayList<Long> primes = new ArrayList<>(Arrays.asList((long) 2, (long) 3));
     Button run = new Button("RUN");
     FractranProgram program;
-    ScrollPane displayFrations = new ScrollPane();
+    ScrollPane displayFractions = new ScrollPane();
     ScrollPane displayState = new ScrollPane();
     Label lblstate = new Label();
     
@@ -101,7 +100,7 @@ public class Main extends Application {
     };
 
 
-            EventHandler<ActionEvent> clickRun = actionEvent ->
+    EventHandler<ActionEvent> clickRun = actionEvent ->
     {
         BigInteger newState = program.run(state);
         state = newState.multiply(BigInteger.valueOf(2));
@@ -136,7 +135,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
         root.getChildren().add(run);
         root.getChildren().add(displayState);
-        root.getChildren().add(displayFrations);
+        root.getChildren().add(displayFractions);
         stage.setResizable(false);
     
         canvas.setOnMousePressed(clickedBoard);
@@ -148,13 +147,15 @@ public class Main extends Application {
         AnchorPane.setLeftAnchor(run, (double) 10);
         AnchorPane.setTopAnchor(displayState, (double) (10 + sizey * 20 + 10));
         AnchorPane.setLeftAnchor(displayState, (double) 70);
-        AnchorPane.setTopAnchor(displayFrations, (double) (10 + sizey * 20 + 50));
-        AnchorPane.setLeftAnchor(displayFrations, (double) 10);
+        AnchorPane.setTopAnchor(displayFractions, (double) (10 + sizey * 20 + 50));
+        AnchorPane.setLeftAnchor(displayFractions, (double) 10);
         
         lblstate.setText("2");
         displayState.setContent(lblstate);
         displayState.setPrefSize(sizex*20-60, 20);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        
+        
         
         int totlen = 0;
         String input = new Scanner(Paths.get("fractrancode.txt"), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
@@ -167,33 +168,38 @@ public class Main extends Application {
         }
         
         int canvaswidth = 4096;
+        int rowheight = 40;
         if (totlen < 4096)
         {
             canvaswidth = totlen;
         }
-        System.out.println(totlen);
-        System.out.println(40*Math.ceil(((double) totlen / (double) canvaswidth)));
-        Canvas fractions = new Canvas(canvaswidth, 40*Math.ceil((double) totlen / (double) canvaswidth));
-        System.out.println(totlen);
+        Canvas fractions = new Canvas(canvaswidth, rowheight * Math.ceil((double) totlen / (double) canvaswidth));
         GraphicsContext gc2 = fractions.getGraphicsContext2D();
         gc2.setFill(Color.BLACK);
-        int pos = 0;
+        int[] pos = {0, 20};
         for (int i = 0; i < fracts.length; i++)
         {
+            pos[0] += 10;
             String[] splitted = fracts[i].split("/");
-            int x = pos % 4096;
-            int y = 40 * (int) Math.floor(pos / 4096.0);
-            pos += 7*Math.max(splitted[0].length(), splitted[1].length());
-            if (pos - y/40 > 4096 - 20)
-            {
-                x = 0;
-                y ++;
+            int thiswidth = 7 * Math.max(splitted[0].length(), splitted[1].length());
+            if (pos[0] + thiswidth > 4096) {
+                pos[0] = 10;
+                pos[1] += rowheight;
             }
-            gc2.fillText(splitted[0], x + 10, y);
+            double x = pos[0] + thiswidth/2.0;
+            int y = pos[1];
+            
+            gc2.fillText(splitted[0], x - 7 * splitted[0].length() / 2.0, y);
+            gc2.fillText(splitted[1], x - 7 * splitted[1].length() / 2.0, y + 17);
+            gc2.fillRect(pos[0], pos[1] + 3, thiswidth, 2);
+            
+            pos[0] += thiswidth;
         }
         
-        displayFrations.setContent(fractions);
-        displayFrations.setPrefSize(sizex*20, 60);
+        
+        
+        displayFractions.setContent(fractions);
+        displayFractions.setPrefSize(sizex*20, 100);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
