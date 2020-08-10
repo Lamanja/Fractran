@@ -26,20 +26,21 @@ import java.util.Scanner;
 
 
 public class Main extends Application {
-    static int sizex = 21;
-    static int sizey = 21;
-    static Canvas canvas = new Canvas(sizex*20+20, sizey*20+20+60);
-    static GraphicsContext gc = canvas.getGraphicsContext2D();
+    static int sizex = 20;
+    static int sizey = 20;
+    static Canvas canvas;
+    static GraphicsContext gc;
     static BigInteger state = BigInteger.valueOf(2);
 
     static ArrayList<Long> primes = new ArrayList<>(Arrays.asList((long) 2, (long) 3));
-    Button run = new Button("RUN");
-    Button grid = new Button("GRID");
-    FractranProgram program;
-    ScrollPane displayFractions = new ScrollPane();
-    ScrollPane displayState = new ScrollPane();
-    TextField tstate = new TextField();
+    static Button run = new Button("RUN");
+    static Button grid = new Button("GRID");
+    static FractranProgram program;
+    static ScrollPane displayFractions = new ScrollPane();
+    static ScrollPane displayState = new ScrollPane();
+    static TextField tstate = new TextField();
     static Canvas fractions;
+    static AnchorPane root;
     
     
     static boolean black = false;
@@ -127,19 +128,25 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
+        int windowheight = sizey * 20 + 60;
         FractranGenerator.generateProgram(sizex, sizey);
         program = new FractranProgram();
-        Pane root = new AnchorPane();
+        root = new AnchorPane();
+        if (displayFractions())
+        {
+            windowheight += 110;
+        }
         String title = "Conway games";
         stage.setTitle(title);
-        stage.setScene(new Scene(root, sizex*20+20, sizey*20+20+150));
+        stage.setScene(new Scene(root, sizex * 20 + 20, windowheight));
+        canvas = new Canvas(sizex * 20 + 20, windowheight);
         stage.show();
+        gc = canvas.getGraphicsContext2D();
         
         root.getChildren().add(canvas);
         root.getChildren().add(run);
         root.getChildren().add(grid);
         root.getChildren().add(displayState);
-        root.getChildren().add(displayFractions);
         stage.setResizable(false);
     
         canvas.setOnMousePressed(clickedBoard);
@@ -148,28 +155,21 @@ public class Main extends Application {
         run.setOnAction(clickRun);
         grid.setOnAction(clickGrid);
 
-        AnchorPane.setTopAnchor(run, (double) (10 + sizey * 20 + 10));
-        AnchorPane.setLeftAnchor(run, (double) 10);
-        AnchorPane.setTopAnchor(displayState, (double) (10 + sizey * 20 + 10));
-        AnchorPane.setLeftAnchor(displayState, (double) 70);
-        AnchorPane.setTopAnchor(displayFractions, (double) (10 + sizey * 20 + 50));
-        AnchorPane.setLeftAnchor(displayFractions, (double) 10);
+        AnchorPane.setTopAnchor(run, (double) (sizey * 20 + 20));
+        AnchorPane.setLeftAnchor(run, 10.0);
+        AnchorPane.setTopAnchor(displayState, (double) (sizey * 20 + 20));
+        AnchorPane.setLeftAnchor(displayState, 70.0);
         
         tstate.setText("2");
-        tstate.setMinSize(sizex*20 - 60, 20);
+        tstate.setMinSize(sizex * 20 - 60, 20);
         displayState.setContent(tstate);
-        displayState.setPrefSize(sizex*20 - 60, 20);
+        displayState.setPrefSize(sizex * 20 - 60, 20);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         
-        displayFractions();
-        
-        displayFractions.setContent(fractions);
-        displayFractions.setPrefSize(sizex*20, 100);
-        displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         
         gc.setFill(Color.ANTIQUEWHITE);
-        gc.fillRect(0, 0, sizex * 20 + 20, sizey * 20 + 20 + 100);
+        gc.fillRect(0, 0, sizex * 20 + 20, windowheight);
         gc.setFill(Color.WHITE);
         gc.fillRect(10, 10, sizex * 20, sizey * 20);
 
@@ -181,7 +181,7 @@ public class Main extends Application {
         }
     }
     
-    static void displayFractions() throws IOException {
+    static boolean displayFractions() throws IOException {
     
         int totlen = 0;
         String input = new Scanner(Paths.get("fractrancode.txt"), StandardCharsets.UTF_8.name()).useDelimiter("\\A").next();
@@ -207,19 +207,33 @@ public class Main extends Application {
             pos[0] += 10;
             String[] splitted = fracts[i].split("/");
             int thiswidth = 7 * Math.max(splitted[0].length(), splitted[1].length());
-            if (pos[0] + thiswidth > 4096) {
+            if (pos[0] + thiswidth > 4096)
+            {
                 pos[0] = 10;
                 pos[1] += rowheight;
             }
-            double x = pos[0] + thiswidth/2.0;
-            int y = pos[1];
-        
-            gc2.fillText(splitted[0], x - 7 * splitted[0].length() / 2.0, y);
-            gc2.fillText(splitted[1], x - 7 * splitted[1].length() / 2.0, y + 17);
+            
+            double x = pos[0] + thiswidth / 2.0;
+            
+            gc2.fillText(splitted[0], x - 7 * splitted[0].length() / 2.0, pos[1]);
+            gc2.fillText(splitted[1], x - 7 * splitted[1].length() / 2.0, pos[1] + 17);
             gc2.fillRect(pos[0], pos[1] + 3, thiswidth, 2);
         
             pos[0] += thiswidth;
         }
+        
+        if (pos[1] < 4096 - rowheight)
+        {
+            displayFractions.setContent(fractions);
+            displayFractions.setPrefSize(sizex*20, 100);
+            displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+            AnchorPane.setTopAnchor(displayFractions, (double) (10 + sizey * 20 + 50));
+            AnchorPane.setLeftAnchor(displayFractions, (double) 10);
+            root.getChildren().add(displayFractions);
+            return true;
+        }
+        return false;
     
     }
 
