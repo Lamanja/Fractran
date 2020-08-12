@@ -10,6 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -26,8 +28,8 @@ import java.util.Scanner;
 
 
 public class Main extends Application {
-    static int sizex = 50;
-    static int sizey = 20;
+    static int sizex = 15;
+    static int sizey = 15;
     static Canvas canvas;
     static GraphicsContext gc;
     static BigInteger state = BigInteger.valueOf(2);
@@ -128,6 +130,16 @@ public class Main extends Application {
         paint();
 
     };
+
+    EventHandler<KeyEvent> writeState = keyEvent ->
+    {
+        if(keyEvent.getCode().equals(KeyCode.getKeyCode("Enter")))
+        {
+            state = new BigInteger(tstate.getText());
+            paint();
+        }
+
+    };
     
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
@@ -159,6 +171,7 @@ public class Main extends Application {
         canvas.setOnMouseReleased(releasedBoard);
         run.setOnAction(clickRun);
         grid.setOnAction(clickGrid);
+        displayState.setOnKeyPressed(writeState);
         if (isFractions) {
             root.getChildren().add(displayFractions);
             AnchorPane.setTopAnchor(displayFractions, (double) (10 + sizey * 20 + 50));
