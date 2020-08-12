@@ -26,7 +26,7 @@ import java.util.Scanner;
 
 public class Main extends Application {
     static int sizex = 20;
-    static int sizey = 20;
+    static int sizey = 10;
     static Canvas canvas;
     static GraphicsContext gc;
     static BigInteger state = BigInteger.valueOf(2);
@@ -128,7 +128,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException, InterruptedException {
         int windowheight = sizey * 20 + 60;
-        FractranGenerator.generateProgram(sizex, sizey);
+        FractranGenerator.generateProgram(sizey, sizex);
         program = new FractranProgram();
         root = new AnchorPane();
         boolean isFractions = displayFractions();
