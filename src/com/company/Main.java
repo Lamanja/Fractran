@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -25,8 +26,8 @@ import java.util.Scanner;
 
 
 public class Main extends Application {
-    static int sizex = 20;
-    static int sizey = 10;
+    static int sizex = 50;
+    static int sizey = 20;
     static Canvas canvas;
     static GraphicsContext gc;
     static BigInteger state = BigInteger.valueOf(2);
@@ -97,7 +98,10 @@ public class Main extends Application {
                 addGrid();
                 tstate.setText(state.toString());
                 tstate.setPrefSize(state.toString().length() * 7, 20);
-
+                //tstate.setFont(new Font("Arial", 12));
+                //System.out.println(tstate.getFont());
+                //Font font = tstate.getFont();
+                
             }
         }
     };
@@ -169,12 +173,14 @@ public class Main extends Application {
         AnchorPane.setLeftAnchor(run, 10.0);
         AnchorPane.setTopAnchor(displayState, (double) (sizey * 20 + 20));
         AnchorPane.setLeftAnchor(displayState, 70.0);
+        AnchorPane.setTopAnchor(grid, (double) (sizey * 20 + 20));
+        AnchorPane.setRightAnchor(grid, 10.0);
 
 
         tstate.setText("2");
-        tstate.setMinSize(sizex * 20 - 60, 20);
+        tstate.setMinSize(sizex * 20 - 120, 20);
         displayState.setContent(tstate);
-        displayState.setPrefSize(sizex * 20 - 60, 20);
+        displayState.setPrefSize(sizex * 20 - 120, 20);
         displayState.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         displayState.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
